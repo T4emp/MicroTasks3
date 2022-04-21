@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using MathNet.Numerics.Statistics;
 
 namespace MicroTasks3
 {
@@ -80,9 +79,48 @@ namespace MicroTasks3
 
         public static void Second()
         {
-            var values1 = new List<double> {123, 142, 125, 154, 133, 119, 148};
-            var values2 = new List<double> {134, 142, 163, 127, 142, 155, 120};
-            Console.WriteLine($"Корреляция Спирмена равна: {Correlation.Pearson(values1, values2)}");
+            var values1 = new List<double> { 123, 142, 125, 154, 133, 119, 148 };
+            var values2 = new List<double> { 134, 142, 163, 127, 142, 155, 120 };
+            Console.WriteLine($"Корреляция Спирмена равна: {Pearson(values1, values2)}");
+        }
+
+        public static double Pearson(IEnumerable<double> dataA, IEnumerable<double> dataB)
+        {
+            int num = 0;
+            double num2 = 0.0;
+            double num3 = 0.0;
+            double num4 = 0.0;
+            double num5 = 0.0;
+            double num6 = 0.0;
+            using (IEnumerator<double> enumerator = dataA.GetEnumerator())
+            {
+                using (IEnumerator<double> enumerator2 = dataB.GetEnumerator())
+                {
+                    while (enumerator.MoveNext())
+                    {
+                        if (!enumerator2.MoveNext())
+                        {
+                            throw new ArgumentOutOfRangeException("dataB", "Аргументы массива должны иметь одинаковую длину.");
+                        }
+                        double num7 = enumerator.Current;
+                        double num8 = enumerator2.Current;
+                        double num9 = num7 - num3;
+                        double num10 = num9 / (double)(++num);
+                        double num11 = num8 - num4;
+                        double num12 = num11 / (double)num;
+                        num3 += num10;
+                        num4 += num12;
+                        num5 += num10 * num9 * (double)(num - 1);
+                        num6 += num12 * num11 * (double)(num - 1);
+                        num2 += num9 * num11 * (double)(num - 1) / (double)num;
+                    }
+                    if (enumerator2.MoveNext())
+                    {
+                        throw new ArgumentOutOfRangeException("dataA", "Аргументы массива должны иметь одинаковую длину.");
+                    }
+                }
+            }
+            return num2 / Math.Sqrt(num5 * num6);
         }
     }
 }
